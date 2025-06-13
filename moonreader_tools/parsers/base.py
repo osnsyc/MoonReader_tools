@@ -1,4 +1,6 @@
+import os
 import logging
+from datetime import datetime
 
 from moonreader_tools.datamodel.book import Book
 from moonreader_tools.parsers import FB2NoteParser, PDFNoteParser, StatsAccessor
@@ -17,6 +19,7 @@ class BookParser:
         self._book_name = kwargs.get("book_name", "")
         self._notes_fobj = None
         self._stats_fobj = None
+        self._last_modified = None
         self._book_type = book_type
         self._stats_reader = kwargs.get("stats_reader", StatsAccessor())
 
@@ -37,6 +40,7 @@ class BookParser:
         instance.set_book_name(book_title)
         instance.set_notes_fobj(notes_fobj)
         instance.set_stats_fobj(stats_fobj)
+        instance.set_last_modified(stats_fobj)
         return instance
 
     def __enter__(self):
@@ -72,6 +76,10 @@ class BookParser:
         self._stats_fobj = stats_fileobj
         return self
 
+    def set_last_modified(self, stats_fileobj):
+        self._last_modified = datetime.fromtimestamp(os.path.getmtime(stats_fileobj)).strftime('%Y-%m-%dT%H:%M:%S')
+        return self 
+    
     def get_note_reader_by_type(self, book_type):
         book_type = book_type.lower()
         if book_type in ["pdf"]:
@@ -95,4 +103,4 @@ class BookParser:
             notes = note_reader.from_file_obj(self._notes_fobj)
         if self._stats_fobj:
             stats = self._stats_reader.stats_from_file_obj(self._stats_fobj)
-        return Book(title=self._book_name, stats=stats, notes=notes)
+        return Book(title=self._book_name, stats=stats, notes=notes, last_modified=self._last_modified)

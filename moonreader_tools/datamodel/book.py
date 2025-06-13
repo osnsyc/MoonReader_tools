@@ -10,7 +10,7 @@ class Book:
     with its statistics and attached notes if any
     """
 
-    def __init__(self, title, stats=None, notes: List[Note] = None) -> None:
+    def __init__(self, title, stats=None, notes: List[Note] = None, last_modified = None) -> None:
         """
         :param title: Book title
         :param stats: Statistics object
@@ -20,6 +20,7 @@ class Book:
         self.stats = stats
         self.stats = stats or Statistics.empty_stats()
         self.notes = notes or []
+        self.last_modified = last_modified
 
     @property
     def pages(self):
@@ -51,6 +52,7 @@ class Book:
             "title": self.title,
             "pages": self.pages,
             "percentage": self.percentage,
+            "last_modified": self.last_modified,
             "notes": [note.to_dict() for note in self.notes],
         }
         return book_dict

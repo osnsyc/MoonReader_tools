@@ -39,6 +39,7 @@ class FilesystemFinder:
                         reader.set_notes_file(note_file)
                         .set_stats_file(stat_file)
                         .set_book_name(book_name)
+                        .set_last_modified(stat_file)
                     )
                     yield reader.build()
         except Exception:
