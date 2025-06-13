@@ -91,7 +91,7 @@ class BookParser:
 
     def build(self) -> "Book":
         """Constructs actual book instance"""
-        if not all([self._stats_fobj, self._notes_fobj]):
+        if not any([self._stats_fobj, self._notes_fobj]):
             logger.error(
                 "Both stats file and notes file are not set for book %s.",
                 self._book_name,
